@@ -2,7 +2,7 @@ public class Account {
 
     private long money;
     private String accNumber;
-    private boolean isActive = true;
+    private boolean isActive;
 
     public Account(long money, String accNumber, boolean isActive) {
         this.money = money;

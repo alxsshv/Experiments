@@ -31,7 +31,8 @@ public class Bank {
         accounts.get(toAccountNum).setMoney(toAccountMoney + amount);
         try {
             boolean isBlockAccounts = false;
-            if (amount > 50000) {
+            if (amount >= 50000) {
+                System.out.println("Проверка службой безопасности банка");
                 isBlockAccounts = isFraud (fromAccountNum, toAccountNum, amount);
             }
             if (isBlockAccounts){
@@ -64,7 +65,7 @@ public class Bank {
                 !accounts.get(toAccountNum).isActive();
         boolean balanceIsNotEnough =  amount > accounts.get(fromAccountNum).getMoney();
         if (accountsBlocked) {
-            System.out.println("ВСе операции с указанными счетами приостановлены");
+            System.out.println("Все операции с указанными счетами приостановлены");
         }
         if (balanceIsNotEnough) {
             System.out.println("Для выполняения перевода на счете недостаточно средств");
