@@ -1,13 +1,16 @@
 public class Account {
 
-    private long money;
+    private volatile long money;
     private String accNumber;
-    private boolean isActive;
+    private volatile boolean isActive;
+    private volatile boolean isBusy;
+
 
     public Account(long money, String accNumber, boolean isActive) {
         this.money = money;
         this.accNumber = accNumber;
         this.isActive = isActive;
+
     }
 
     public long getMoney() {
@@ -33,4 +36,14 @@ public class Account {
     public void setActive(boolean active) {
         isActive = active;
     }
+
+    public synchronized boolean isBusy() {
+        return isBusy;
+    }
+
+    public synchronized void setBusy(boolean busy) {
+        isBusy = busy;
+    }
+
+
 }

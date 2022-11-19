@@ -1,5 +1,4 @@
-import java.util.HashMap;
-import java.util.Map;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -9,6 +8,7 @@ public class Main {
         for (int i = 1; i < 20; i++) {
             new Thread(generator).start();
         }
+
 
 
 

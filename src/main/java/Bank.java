@@ -1,10 +1,11 @@
 
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Random;
 
 public class Bank {
 
-    private Map<String, Account> accounts;
+    private volatile Map<String, Account> accounts = new Hashtable<>();
 
     private final Random random = new Random();
 
@@ -20,30 +21,30 @@ public class Bank {
      * метод isFraud. Если возвращается true, то делается блокировка счетов (как – на ваше
      * усмотрение)
      */
-    public void transfer(String fromAccountNum, String toAccountNum, long amount) {
-        if (checkAccounts(fromAccountNum,toAccountNum, amount)){
-            return;
+    public synchronized void transfer(String fromAccountNum, String toAccountNum, long amount) {
+        Transfer tr = null;
+        while (tr == null) {
+            tr = takeAccounts(fromAccountNum, toAccountNum, amount);
         }
-
-        long fromAccountMoney = getBalance(fromAccountNum);
-        long toAccountMoney = getBalance(toAccountNum);
-        accounts.get(fromAccountNum).setMoney(fromAccountMoney - amount);
-        accounts.get(toAccountNum).setMoney(toAccountMoney + amount);
-        try {
-            boolean isBlockAccounts = false;
-            if (amount >= 50000) {
-                System.out.println("Проверка службой безопасности банка");
-                isBlockAccounts = isFraud (fromAccountNum, toAccountNum, amount);
-            }
-            if (isBlockAccounts){
-                accounts.get(fromAccountNum).setActive(false);
-                accounts.get(toAccountNum).setActive(false);
-            }
-        } catch (InterruptedException e) {
+        if (tr.run()) {
+            try {
+                boolean isBlockAccounts = false;
+                if (amount >= 50000) {
+                    System.out.println("Проверка службой безопасности банка");
+                    isBlockAccounts = isFraud(fromAccountNum, toAccountNum, amount);
+                }
+                if (isBlockAccounts) {
+                    System.out.println("Операция не прошла проверку подлинности, счета заблокированы");
+                    tr.deactivateAccounts();
+                }
+            } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-
-
+        }
+        accounts.put(fromAccountNum, tr.getFromAccount());
+        accounts.put(toAccountNum, tr.getToAccount());
+        accounts.get(fromAccountNum).setBusy(false);
+        accounts.get(toAccountNum).setBusy(false);
     }
 
     /**
@@ -60,17 +61,16 @@ public class Bank {
         }
      return totalSum;
     }
-    private boolean checkAccounts (String fromAccountNum, String toAccountNum, long amount){
-        boolean accountsBlocked = !accounts.get(fromAccountNum).isActive() ||
-                !accounts.get(toAccountNum).isActive();
-        boolean balanceIsNotEnough =  amount > accounts.get(fromAccountNum).getMoney();
-        if (accountsBlocked) {
-            System.out.println("Все операции с указанными счетами приостановлены");
+
+
+    private synchronized Transfer takeAccounts(String fromAccountNum, String toAccountNum, long amount){
+        if (!accounts.get(fromAccountNum).isBusy() && !accounts.get(fromAccountNum).isBusy()){
+            accounts.get(fromAccountNum).setBusy(true);
+            accounts.get(toAccountNum).setBusy(true);
+            Transfer tr = new Transfer(accounts.get(fromAccountNum),accounts.get(toAccountNum), amount);
+            return tr;
         }
-        if (balanceIsNotEnough) {
-            System.out.println("Для выполняения перевода на счете недостаточно средств");
-        }
-        return balanceIsNotEnough || accountsBlocked;
+        return null;
     }
 
     public Map<String, Account> getAccounts() {
