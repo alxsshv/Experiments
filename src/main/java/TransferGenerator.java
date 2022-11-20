@@ -22,10 +22,11 @@ public class TransferGenerator implements Runnable {
         String fromAccountNum = String.valueOf ((int) (Math.random() * bank.getAccounts().size()));
         String toAccountNum = String.valueOf ((int) (Math.random() * bank.getAccounts().size()));
         long amount = (int) (Math.random() * 60000);
+        bank.transfer(fromAccountNum,toAccountNum, amount);
         System.out.println("fromAccountNum: " + fromAccountNum + ", баланс " + bank.getBalance(fromAccountNum));
         System.out.println("toAccountNum: " + toAccountNum  + ", баланс " + bank.getBalance(toAccountNum));
         System.out.println("Сумма перевода: " + amount);
-        bank.transfer(fromAccountNum,toAccountNum, amount);
+
 
     }
 

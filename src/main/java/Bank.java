@@ -22,10 +22,10 @@ public class Bank {
      * усмотрение)
      */
     public synchronized void transfer(String fromAccountNum, String toAccountNum, long amount) {
-        Transfer tr = null;
-        while (tr == null) {
-            tr = takeAccounts(fromAccountNum, toAccountNum, amount);
-        }
+//        Transfer tr = null;
+//        while (tr == null) {
+        Transfer  tr = takeAccounts(fromAccountNum, toAccountNum, amount);
+//        }
         if (tr.run()) {
             try {
                 boolean isBlockAccounts = false;
@@ -45,6 +45,7 @@ public class Bank {
         accounts.put(toAccountNum, tr.getToAccount());
         accounts.get(fromAccountNum).setBusy(false);
         accounts.get(toAccountNum).setBusy(false);
+        notifyAll();
     }
 
     /**
@@ -64,13 +65,17 @@ public class Bank {
 
 
     private synchronized Transfer takeAccounts(String fromAccountNum, String toAccountNum, long amount){
-        if (!accounts.get(fromAccountNum).isBusy() && !accounts.get(fromAccountNum).isBusy()){
+        if (!accounts.get(fromAccountNum).isBusy() && !accounts.get(fromAccountNum).isBusy()) {
             accounts.get(fromAccountNum).setBusy(true);
             accounts.get(toAccountNum).setBusy(true);
-            Transfer tr = new Transfer(accounts.get(fromAccountNum),accounts.get(toAccountNum), amount);
-            return tr;
+        } else {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
-        return null;
+        return new Transfer(accounts.get(fromAccountNum),accounts.get(toAccountNum), amount);
     }
 
     public Map<String, Account> getAccounts() {

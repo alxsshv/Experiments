@@ -1,6 +1,6 @@
 public class Account {
 
-    private volatile long money;
+    private long money;
     private String accNumber;
     private volatile boolean isActive;
     private volatile boolean isBusy;
@@ -10,6 +10,7 @@ public class Account {
         this.money = money;
         this.accNumber = accNumber;
         this.isActive = isActive;
+        isBusy = false;
 
     }
 
@@ -45,5 +46,13 @@ public class Account {
         isBusy = busy;
     }
 
-
+    @Override
+    public String toString() {
+        return "Account{" +
+                "money=" + money +
+                ", accNumber='" + accNumber + '\'' +
+                ", isActive=" + isActive +
+                ", isBusy=" + isBusy +
+                '}';
+    }
 }
