@@ -1,3 +1,5 @@
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class Account {
 
     private long money;
@@ -55,4 +57,5 @@ public class Account {
                 ", isBusy=" + isBusy +
                 '}';
     }
+
 }

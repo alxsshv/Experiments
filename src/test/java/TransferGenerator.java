@@ -1,7 +1,4 @@
 
-import java.util.Hashtable;
-import java.util.Map;
-
 public class TransferGenerator implements Runnable {
     private final Bank bank;
 
@@ -12,8 +9,9 @@ public class TransferGenerator implements Runnable {
     @Override
     public void run() {
         System.out.println("Cуммарные средства в банке: " + bank.getSumAllAccounts());
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000000; i++) {
             generateTransfer();
+            System.out.println("Перевод №" + i);
         }
         System.out.println("Cуммарные средства в банке: " + bank.getSumAllAccounts());
     }
@@ -28,15 +26,6 @@ public class TransferGenerator implements Runnable {
         System.out.println("Сумма перевода: " + amount);
 
 
-    }
-
-    public void generateAccounts (){
-        Map<String, Account> accounts = new Hashtable<>();
-        for (int i = 0; i < 100; i++) {
-            long amount = (int) (Math.random() * 100000);
-            accounts.put(String.valueOf(i), new Account(amount,String.valueOf(i),true));
-        }
-        bank.setAccounts(accounts);
     }
 
     public Bank getBank() {

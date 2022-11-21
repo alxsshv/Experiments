@@ -22,10 +22,7 @@ public class Bank {
      * усмотрение)
      */
     public synchronized void transfer(String fromAccountNum, String toAccountNum, long amount) {
-//        Transfer tr = null;
-//        while (tr == null) {
-        Transfer  tr = takeAccounts(fromAccountNum, toAccountNum, amount);
-//        }
+        Transfer tr = takeAccounts(fromAccountNum, toAccountNum, amount);
         if (tr.run()) {
             try {
                 boolean isBlockAccounts = false;

@@ -30,4 +30,15 @@ public class BankTest  extends TestCase {
         boolean expected = true;
         assertEquals(expected, actual);
     }
+
+    public void testTransferMultiThreadMode(){
+        TransferGenerator generator = new TransferGenerator(bank);
+        for (int i = 1; i < 1000; i++) {
+            new Thread(generator).start();
+        }
+        bank = generator.getBank();
+        long actual = bank.getSumAllAccounts();
+        long expected = 4950000;
+        assertEquals(expected, actual);
+    }
 }
