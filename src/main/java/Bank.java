@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Bank {
 
-    private volatile Map<String, Account> accounts = new Hashtable<>();
+    private Map<String, Account> accounts = new Hashtable<>();
 
     private final Random random = new Random();
 
@@ -22,7 +22,10 @@ public class Bank {
      * усмотрение)
      */
     public synchronized void transfer(String fromAccountNum, String toAccountNum, long amount) {
-        Transfer tr = takeAccounts(fromAccountNum, toAccountNum, amount);
+        Transfer tr = null;
+        while (tr == null) {
+            tr = takeAccounts(fromAccountNum, toAccountNum, amount);
+        }
         if (tr.run()) {
             try {
                 boolean isBlockAccounts = false;
@@ -65,14 +68,9 @@ public class Bank {
         if (!accounts.get(fromAccountNum).isBusy() && !accounts.get(fromAccountNum).isBusy()) {
             accounts.get(fromAccountNum).setBusy(true);
             accounts.get(toAccountNum).setBusy(true);
-        } else {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            return new Transfer(accounts.get(fromAccountNum),accounts.get(toAccountNum), amount);
         }
-        return new Transfer(accounts.get(fromAccountNum),accounts.get(toAccountNum), amount);
+        return null;
     }
 
     public Map<String, Account> getAccounts() {

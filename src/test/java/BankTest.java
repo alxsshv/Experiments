@@ -1,8 +1,11 @@
 import junit.framework.TestCase;
+import net.jodah.concurrentunit.Waiter;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class BankTest  extends TestCase {
     Bank bank = new Bank();
@@ -32,13 +35,33 @@ public class BankTest  extends TestCase {
     }
 
     public void testTransferMultiThreadMode(){
-        TransferGenerator generator = new TransferGenerator(bank);
-        for (int i = 1; i < 1000; i++) {
-            new Thread(generator).start();
+        Waiter waiter = new Waiter();
+        for (int i = 1; i < 4; i++) {
+           new Thread(() -> {
+               for (int j = 0; j < 100; j++) {
+                       System.out.println("Перевод №" + j);
+                       String fromAccountNum = String.valueOf((int) (Math.random() * bank.getAccounts().size()));
+                       String toAccountNum = String.valueOf((int) (Math.random() * bank.getAccounts().size()));
+                       long amount = (int) (Math.random() * 60000);
+                       bank.transfer(fromAccountNum, toAccountNum, amount);
+                       System.out.println("fromAccountNum: " + fromAccountNum + ", баланс " + bank.getBalance(fromAccountNum));
+                       System.out.println("toAccountNum: " + toAccountNum + ", баланс " + bank.getBalance(toAccountNum));
+                       System.out.println("Сумма перевода: " + amount);
+               }
+               System.out.println("Cуммарные средства в банке: " + bank.getSumAllAccounts());
+               waiter.resume();
+           }).start();
         }
-        bank = generator.getBank();
+       // bank = generator.getBank();
         long actual = bank.getSumAllAccounts();
         long expected = 4950000;
         assertEquals(expected, actual);
+        try {
+            waiter.await(110, TimeUnit.SECONDS, 2);
+        } catch (TimeoutException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

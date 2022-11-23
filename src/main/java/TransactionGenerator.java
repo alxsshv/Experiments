@@ -1,8 +1,7 @@
-
-public class TransferGenerator extends Thread {
+public class TransactionGenerator implements Runnable{
     private final Bank bank;
 
-    public TransferGenerator(Bank bank) {
+    public TransactionGenerator(Bank bank) {
         this.bank = bank;
     }
 
@@ -20,9 +19,5 @@ public class TransferGenerator extends Thread {
             System.out.println("Сумма перевода: " + amount);
         }
         System.out.println("Cуммарные средства в банке: " + bank.getSumAllAccounts());
-    }
-
-    public Bank getBank() {
-        return bank;
     }
 }
