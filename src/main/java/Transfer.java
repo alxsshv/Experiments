@@ -9,18 +9,16 @@ public class Transfer {
         this.amount = amount;
     }
 
-    public synchronized boolean run(){
+    public boolean execute(){
         if (!checkAccounts()){
             return false;
         }
         fromAccount.setMoney(fromAccount.getMoney() - amount);
         toAccount.setMoney(toAccount.getMoney() + amount);
-        fromAccount.setBusy(false);
-        toAccount.setBusy(false);
         return true;
     }
 
-    private synchronized boolean checkAccounts (){
+    private boolean checkAccounts (){
         boolean accountsActive = fromAccount.isActive() && toAccount.isActive();
         boolean balanceIsEnough =  amount < fromAccount.getMoney();
         if (!accountsActive) {
@@ -33,7 +31,7 @@ public class Transfer {
         return balanceIsEnough && accountsActive;
     }
 
-    public synchronized void deactivateAccounts(){
+    public void deactivateAccounts(){
         fromAccount.setActive(false);
         toAccount.setActive(false);
     }

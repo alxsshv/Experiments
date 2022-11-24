@@ -22,32 +22,28 @@ public class Bank {
      * усмотрение)
      */
     public synchronized void transfer(String fromAccountNum, String toAccountNum, long amount) {
-        Transfer tr = null;
-        while (tr == null) {
-            tr = takeAccounts(fromAccountNum, toAccountNum, amount);
+        Transfer transfer = new Transfer(accounts.get(fromAccountNum),accounts.get(toAccountNum), amount);
+        transfer.execute();
+        // runSecurityCheck(fromAccountNum, toAccountNum, amount)
+        if (true) {
+            System.out.println("Операция не прошла проверку подлинности, счета заблокированы");
+            transfer.deactivateAccounts();
         }
-        if (tr.run()) {
+        accounts.put(fromAccountNum, transfer.getFromAccount());
+        accounts.put(toAccountNum, transfer.getToAccount());
+    }
+
+    public boolean runSecurityCheck(String fromAccountNum, String toAccountNum, long amount){
+        if (amount >= 50000) {
+            System.out.println("Проверка службой безопасности банка");
             try {
-                boolean isBlockAccounts = false;
-                if (amount >= 50000) {
-                    System.out.println("Проверка службой безопасности банка");
-                    isBlockAccounts = isFraud(fromAccountNum, toAccountNum, amount);
-                }
-                if (isBlockAccounts) {
-                    System.out.println("Операция не прошла проверку подлинности, счета заблокированы");
-                    tr.deactivateAccounts();
-                }
+                return isFraud(fromAccountNum, toAccountNum, amount);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
-        accounts.put(fromAccountNum, tr.getFromAccount());
-        accounts.put(toAccountNum, tr.getToAccount());
-        accounts.get(fromAccountNum).setBusy(false);
-        accounts.get(toAccountNum).setBusy(false);
-        notifyAll();
+        return false;
     }
-
     /**
      * TODO: реализовать метод. Возвращает остаток на счёте.
      */
@@ -61,16 +57,6 @@ public class Bank {
             totalSum = totalSum + entry.getValue().getMoney();
         }
      return totalSum;
-    }
-
-
-    private synchronized Transfer takeAccounts(String fromAccountNum, String toAccountNum, long amount){
-        if (!accounts.get(fromAccountNum).isBusy() && !accounts.get(fromAccountNum).isBusy()) {
-            accounts.get(fromAccountNum).setBusy(true);
-            accounts.get(toAccountNum).setBusy(true);
-            return new Transfer(accounts.get(fromAccountNum),accounts.get(toAccountNum), amount);
-        }
-        return null;
     }
 
     public Map<String, Account> getAccounts() {

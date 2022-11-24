@@ -1,18 +1,15 @@
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Account {
 
     private long money;
     private String accNumber;
     private volatile boolean isActive;
-    private volatile boolean isBusy;
 
 
     public Account(long money, String accNumber, boolean isActive) {
         this.money = money;
         this.accNumber = accNumber;
         this.isActive = isActive;
-        isBusy = false;
 
     }
 
@@ -40,13 +37,9 @@ public class Account {
         isActive = active;
     }
 
-    public synchronized boolean isBusy() {
-        return isBusy;
-    }
 
-    public synchronized void setBusy(boolean busy) {
-        isBusy = busy;
-    }
+
+
 
     @Override
     public String toString() {
@@ -54,7 +47,6 @@ public class Account {
                 "money=" + money +
                 ", accNumber='" + accNumber + '\'' +
                 ", isActive=" + isActive +
-                ", isBusy=" + isBusy +
                 '}';
     }
 
