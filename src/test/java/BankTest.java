@@ -29,6 +29,13 @@ public class BankTest  extends TestCase {
         assertEquals(expected,actual);
     }
 
+    public void testBlockedIfAmountLess50000(){
+        bank.transfer("56","2",45000);
+        boolean actual = !bank.getAccounts().get("56").isActive() || !bank.getAccounts().get("2").isActive();
+        boolean expected = false;
+        assertEquals(expected, actual);
+    }
+
     public void testTransferOneThreadMode(){
         bank.transfer("55","1",52000);
         boolean totalSumIsEquals = bank.getSumAllAccounts() == 4950000;
@@ -42,9 +49,10 @@ public class BankTest  extends TestCase {
     public void testTransferMultiThreadMode(){
         Waiter waiter = new Waiter();
         int threadCount = 50;
+        System.out.println("Cуммарные средства в банке: " + bank.getSumAllAccounts());
         for (int i = 1; i < threadCount+1; i++) {
            new Thread(() -> {
-               for (int j = 0; j < 100; j++) {
+               for (int j = 0; j < 1000; j++) {
                    System.out.println("Перевод №" + j);
                    String fromAccountNum = String.valueOf((int) (Math.random() * bank.getAccounts().size()));
                    String toAccountNum = String.valueOf((int) (Math.random() * bank.getAccounts().size()));
@@ -59,9 +67,11 @@ public class BankTest  extends TestCase {
         long expected = 4950000;
         assertEquals(expected, actual);
         try {
-            waiter.await(1000, TimeUnit.SECONDS, threadCount);
+            waiter.await(2000, TimeUnit.SECONDS, threadCount);
         } catch (TimeoutException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
+
+
 }

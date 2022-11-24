@@ -6,13 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="7b6999bf-7a6a-4d8b-a41f-63d1287fd7f9" name="Changes" comment="Добавленно многопоточное тестирование">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Account.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Bank.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Bank.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/TransactionGenerator.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Transfer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Transfer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/BankTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/BankTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/TransferGenerator.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

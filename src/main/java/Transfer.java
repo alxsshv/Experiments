@@ -9,13 +9,12 @@ public class Transfer {
         this.amount = amount;
     }
 
-    public boolean execute(){
+    public void execute(){
         if (!checkAccounts()){
-            return false;
+            return;
         }
         fromAccount.setMoney(fromAccount.getMoney() - amount);
         toAccount.setMoney(toAccount.getMoney() + amount);
-        return true;
     }
 
     private boolean checkAccounts (){

@@ -24,8 +24,7 @@ public class Bank {
     public synchronized void transfer(String fromAccountNum, String toAccountNum, long amount) {
         Transfer transfer = new Transfer(accounts.get(fromAccountNum),accounts.get(toAccountNum), amount);
         transfer.execute();
-        // runSecurityCheck(fromAccountNum, toAccountNum, amount)
-        if (true) {
+        if (runSecurityCheck(fromAccountNum, toAccountNum, amount)) {
             System.out.println("Операция не прошла проверку подлинности, счета заблокированы");
             transfer.deactivateAccounts();
         }
@@ -33,7 +32,7 @@ public class Bank {
         accounts.put(toAccountNum, transfer.getToAccount());
     }
 
-    public boolean runSecurityCheck(String fromAccountNum, String toAccountNum, long amount){
+    public synchronized boolean runSecurityCheck(String fromAccountNum, String toAccountNum, long amount){
         if (amount >= 50000) {
             System.out.println("Проверка службой безопасности банка");
             try {
